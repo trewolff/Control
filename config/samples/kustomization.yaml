@@ -1,0 +1,8 @@
+## Append samples of your project ##
+resources:
+- 1_cluster.yaml
+- v1_cluster.yaml
+- _v1_cluster.yaml
+- v1alpha1_myapp.yaml
+- _v1alpha1_myapp.yaml
+# +kubebuilder:scaffold:manifestskustomizesamples
