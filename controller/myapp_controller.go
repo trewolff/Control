@@ -19,9 +19,14 @@ package controller
 import (
 	"context"
 
+	appsv1 "k8s.io/api/apps/v1"
+	corev1 "k8s.io/api/core/v1"
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 
 	examplecomv1alpha1 "github.com/trewolff/operator-example/api/v1alpha1"
 )
@@ -46,8 +51,8 @@ type MyAppReconciler struct {
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.21.0/pkg/reconcile
 func (r *MyAppReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	log := ctrl.LoggerFrom(ctx)
-	myapp := &appsv1alpha1.MyApp{}
+	_ = ctrl.LoggerFrom(ctx) // Uncomment if you want to use the logger
+	myapp := &examplecomv1alpha1.MyApp{}
 	if err := r.Get(ctx, req.NamespacedName, myapp); err != nil {
 		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
@@ -79,7 +84,7 @@ func (r *MyAppReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 		},
 	}
 
-	if err := ctrl.SetControllerReference(myapp, deployment, r.Scheme); err != nil {
+	if err := controllerutil.SetControllerReference(myapp, deployment, r.Scheme); err != nil {
 		return ctrl.Result{}, err
 	}
 
